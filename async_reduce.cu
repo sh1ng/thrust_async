@@ -28,45 +28,30 @@ __global__ void reduce_kernel(Iterator first, Iterator last, T init, BinaryOpera
 
 int main()
 {
-    // create a CUDA stream 
-  cudaStream_t s;
-  cudaStreamCreate(&s);
+  const size_t size = 10;
+  cudaStream_t *streams = new cudaStream_t[size];
+  thrust::device_vector<unsigned int> *result = new thrust::device_vector<unsigned int>[size];
+  for(size_t i =0; i < size; ++i){
+    result[i] = thrust::device_vector<unsigned int>(1, 0);
+    cudaStream_t s;
+    cudaStreamCreate(&s);
+    streams[i] = s;
 
-  cudaStream_t s1;
-  cudaStreamCreate(&s1);
-
-  for(size_t i = 0; i < 5; ++i){
+  }
   size_t n = 1 << 20;
-  thrust::host_vector<unsigned int> data_h(n, 1);
+  thrust::device_vector<unsigned int> data(n, 1);
 
-  thrust::device_vector<unsigned int> data = data_h;
-  thrust::device_vector<unsigned int> result(1, 0);
-
-  thrust::host_vector<unsigned int> data1_h(n, 1);
-  thrust::device_vector<unsigned int> data1 = data1_h;
-  thrust::device_vector<unsigned int> result1(1, 0);
-
-  // method 1: call thrust::reduce from an asynchronous CUDA kernel launch
-
-
-
-  // launch a CUDA kernel with only 1 thread on our stream
-  reduce_kernel<<<1,1,0,s>>>(data.begin(), data.end(), 0, thrust::plus<int>(), result.data());
-  reduce_kernel<<<1,1,0,s1>>>(data1.begin(), data1.end(), 0, thrust::plus<int>(), result1.data());
-
-  // wait for the stream to finish
-
-
+  for(size_t i = 0; i < size; ++i){
+    cudaStream_t s = streams[i];
+    reduce_kernel<<<1,1,0,s>>>(data.begin(), data.end(), 0, thrust::plus<int>(), result[i].data());
   
-}
-  cudaStreamSynchronize(s);
-  cudaStreamSynchronize(s1);
+  }
 
-  // our result should be ready
-  // assert(result[0] == n);
-  // assert(result1[0] == n);
-cudaStreamDestroy(s);
-cudaStreamDestroy(s1);
+  for(size_t i =0; i < size; ++i){
+    cudaStream_t s = streams[i];
+    cudaStreamSynchronize(s);
+  }
+
 
   // reset the result
   // result[0] = 0;
