@@ -40,11 +40,17 @@ int main()
   }
   size_t n = 1 << 20;
   
-  thrust::device_vector<unsigned int> data(n, 1);
-  
+  thrust::host_vector<unsigned int> data_h(n, 1);
+
   for(size_t i = 0; i < size; ++i){
 
+    thrust::host_vector<unsigned int> data(n, 0);
     cudaStream_t s = streams[i];
+    cudaMemcpyAsync(thrust::raw_pointer_cast(data.data()),
+                                             thrust::raw_pointer_cast(data_h.data()),
+                                             n * sizeof(unsigned int),
+                                             cudaMemcpyHostToDevice, s);
+
     reduce_kernel<<<1,1,0,s>>>(data.begin(), data.end(), 0, thrust::plus<int>(), result[i].data());
   
   }
