@@ -28,6 +28,13 @@ __global__ void reduce_kernel(Iterator first, Iterator last, T init, BinaryOpera
 
 int main()
 {
+    // create a CUDA stream 
+  cudaStream_t s;
+  cudaStreamCreate(&s);
+
+  cudaStream_t s1;
+  cudaStreamCreate(&s1);
+  
   for(size_t i = 0; i < 5; ++i){
   size_t n = 1 << 20;
   thrust::host_vector<unsigned int> data_h(n, 1);
@@ -41,12 +48,7 @@ int main()
 
   // method 1: call thrust::reduce from an asynchronous CUDA kernel launch
 
-  // create a CUDA stream 
-  cudaStream_t s;
-  cudaStreamCreate(&s);
 
-  cudaStream_t s1;
-  cudaStreamCreate(&s1);
 
   // launch a CUDA kernel with only 1 thread on our stream
   reduce_kernel<<<1,1,0,s>>>(data.begin(), data.end(), 0, thrust::plus<int>(), result.data());
@@ -66,7 +68,7 @@ cudaStreamDestroy(s);
 cudaStreamDestroy(s1);
 
   // reset the result
-  result[0] = 0;
+  // result[0] = 0;
 
 #if __cplusplus >= 201103L
   // method 2: use std::async to create asynchrony
