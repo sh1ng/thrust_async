@@ -29,10 +29,13 @@ __global__ void reduce_kernel(Iterator first, Iterator last, T init, BinaryOpera
 int main()
 {
   size_t n = 1 << 20;
-  thrust::device_vector<unsigned int> data(n, 1);
+  thrust::host_vector<unsigned int> data_h(n, 1);
+
+  thrust::device_vector<unsigned int> data = data_h;
   thrust::device_vector<unsigned int> result(1, 0);
 
-  thrust::device_vector<unsigned int> data1(n, 1);
+  thrust::host_vector<unsigned int> data1_h(n, 1);
+  thrust::device_vector<unsigned int> data1 = data1_h;
   thrust::device_vector<unsigned int> result1(1, 0);
 
   // method 1: call thrust::reduce from an asynchronous CUDA kernel launch
