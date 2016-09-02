@@ -39,9 +39,10 @@ int main()
 
   }
   size_t n = 1 << 20;
-  thrust::device_vector<unsigned int> data(n, 1);
+  
 
   for(size_t i = 0; i < size; ++i){
+    thrust::device_vector<unsigned int> data(n, 1);
     cudaStream_t s = streams[i];
     reduce_kernel<<<1,1,0,s>>>(data.begin(), data.end(), 0, thrust::plus<int>(), result[i].data());
   
