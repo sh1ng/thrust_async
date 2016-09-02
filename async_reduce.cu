@@ -28,6 +28,7 @@ __global__ void reduce_kernel(Iterator first, Iterator last, T init, BinaryOpera
 
 int main()
 {
+  for(size_t i = 0; i < 5; ++i){
   size_t n = 1 << 20;
   thrust::host_vector<unsigned int> data_h(n, 1);
 
@@ -59,7 +60,10 @@ int main()
   assert(result[0] == n);
   assert(result1[0] == n);
 
-  cudaStreamDestroy(s);
+  
+}
+cudaStreamDestroy(s);
+cudaStreamDestroy(s1);
 
   // reset the result
   result[0] = 0;
