@@ -44,7 +44,7 @@ int main()
 
   for(size_t i = 0; i < size; ++i){
 
-    thrust::host_vector<unsigned int> data(n, 0);
+    thrust::device_vector<unsigned int> data(n, 0);
     cudaStream_t s = streams[i];
     cudaMemcpyAsync(thrust::raw_pointer_cast(data.data()),
                                              thrust::raw_pointer_cast(data_h.data()),
