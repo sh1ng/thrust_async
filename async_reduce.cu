@@ -31,27 +31,28 @@ int main()
   const size_t size = 10;
   cudaStream_t *streams = new cudaStream_t[size];
   thrust::device_vector<unsigned int> *result = new thrust::device_vector<unsigned int>[size];
+  thrust::device_vector<unsigned int> *data = new thrust::device_vector<unsigned int>[size];
+  size_t n = 1 << 20;
+
   for(size_t i =0; i < size; ++i){
     result[i] = thrust::device_vector<unsigned int>(1, 0);
     cudaStream_t s;
     cudaStreamCreate(&s);
     streams[i] = s;
+    data[i] = thrust::device_vector<unsigned int>(n, 0);
 
   }
-  size_t n = 1 << 20;
-  
+
   thrust::host_vector<unsigned int> data_h(n, 1);
 
   for(size_t i = 0; i < size; ++i){
-
-    thrust::device_vector<unsigned int> data(n, 0);
     cudaStream_t s = streams[i];
-    cudaMemcpyAsync(thrust::raw_pointer_cast(data.data()),
+    cudaMemcpyAsync(thrust::raw_pointer_cast(data[i].data()),
                                              thrust::raw_pointer_cast(data_h.data()),
                                              n * sizeof(unsigned int),
                                              cudaMemcpyHostToDevice, s);
 
-    reduce_kernel<<<1,1,0,s>>>(data.begin(), data.end(), 0, thrust::plus<int>(), result[i].data());
+    reduce_kernel<<<1,1,0,s>>>(data[i].begin(), data[i].end(), 0, thrust::plus<int>(), result[i].data());
   
   }
 
