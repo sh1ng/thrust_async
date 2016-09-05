@@ -151,8 +151,9 @@ int main(int argc, char** argv)
     // Run
     CubDebugExit(DeviceScan::ExclusiveSum(d_temp_storage_2, temp_storage_bytes_2, d_in_2, d_out_2, num_items, s2));
 
-    cudaStreamSynchronize(s1);
     cudaStreamSynchronize(s2);
+    cudaStreamSynchronize(s1);
+
 
     cudaStreamDestroy(s1);
     cudaStreamDestroy(s2);
