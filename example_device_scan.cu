@@ -73,27 +73,6 @@ void Initialize(
 
 }
 
-/**
- * Solve exclusive-scan problem
- */
-int Solve(
-    int           *h_in,
-    int           *h_reference,
-    int             num_items)
-{
-    int inclusive = 0;
-    int aggregate = 0;
-
-    for (int i = 0; i < num_items; ++i)
-    {
-        h_reference[i] = inclusive;
-        inclusive += h_in[i];
-        aggregate += h_in[i];
-    }
-
-    return aggregate;
-}
-
 
 
 //---------------------------------------------------------------------
@@ -105,7 +84,7 @@ int Solve(
  */
 int main(int argc, char** argv)
 {
-    int num_items = 1 << 28;
+    int num_items = 1 << 25;
 
 
     printf("cub::DeviceScan::ExclusiveSum %d items (%d-byte elements)\n",
@@ -127,10 +106,8 @@ int main(int argc, char** argv)
 
     // Initialize problem and solution
     Initialize(h_in_1, num_items);
-    Solve(h_in_1, h_reference_1, num_items);
 
     Initialize(h_in_1, num_items);
-    Solve(h_in_1, h_reference_1, num_items);
 
     // Allocate problem device arrays
     int *d_in_1 = NULL;
@@ -180,19 +157,6 @@ int main(int argc, char** argv)
     cudaStreamDestroy(s1);
     cudaStreamDestroy(s2);
 
-    // // Check for correctness (and display results, if specified)
-    // int compare = CompareDeviceResults(h_reference, d_out, num_items, true, g_verbose);
-    // printf("\t%s", compare ? "FAIL" : "PASS");
-    // AssertEquals(0, compare);
-
-    // // Cleanup
-    // if (h_in) delete[] h_in;
-    // if (h_reference) delete[] h_reference;
-    // if (d_in) CubDebugExit(g_allocator.DeviceFree(d_in));
-    // if (d_out) CubDebugExit(g_allocator.DeviceFree(d_out));
-    // if (d_temp_storage) CubDebugExit(g_allocator.DeviceFree(d_temp_storage));
-
-    // printf("\n\n");
 
     return 0;
 }
