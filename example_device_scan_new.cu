@@ -82,7 +82,7 @@ void Initialize(
  */
 int main(int argc, char** argv)
 {
-    int num_items = 1 << 25;
+    int num_items = 1 << 20;
 
 
     printf("cub::DeviceScan::ExclusiveSum %d items (%d-byte elements)\n",
