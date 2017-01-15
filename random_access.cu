@@ -1,6 +1,8 @@
 #include "cuda_runtime.h"
 #include <cassert>
 #include <random>
+#include <algorithm>
+#include <iterator>
 #include <thrust/device_vector.h>
 #include <thrust/reduce.h>
 #include <thrust/system/cuda/execution_policy.h>
