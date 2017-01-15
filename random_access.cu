@@ -50,10 +50,10 @@ int main(int argc, char **argv) {
       thrust::raw_pointer_cast(out_d.data()), size);
 
   cudaEvent_t start, end;
-  EventCreate(&start);
-  EventCreate(&end);
+  cudaEventCreate(&start);
+  cudaEventCreate(&end);
 
-  EventRecord(start);
+  cudaEventRecord(start);
 
   for (int ii = 0; ii < PXL_HOST_LOOPS; ii++) {
     gather_kernel<<<gridSize, blockSize>>>(
@@ -62,14 +62,14 @@ int main(int argc, char **argv) {
         thrust::raw_pointer_cast(out_d.data()), size);
   }
 
-  EventRecord(end);
-  EventSynchronize(end);
+  cudaEventRecord(end);
+  cudaEventSynchronize(end);
 
   float elapsed;
-  EventElapsedTime(&elapsed, start, end);
+  cudaEventElapsedTime(&elapsed, start, end);
 
-  printf("%8llu, %8llu, %8.2f\n", size_MB, elapsed / PXL_HOST_LOOPS,
-         (size_MB * PXL_HOST_LOOPS) / (elapsed));
+  printf("%8lu, %f, %8.2f\n", size_MB, elapsed / PXL_HOST_LOOPS,
+         (size_MB * PXL_HOST_LOOPS) / (elapsed * 1024));
 
   return 0;
 }
