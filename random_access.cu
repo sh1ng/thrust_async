@@ -70,8 +70,8 @@ int main(int argc, char **argv) {
   float elapsed;
   cudaEventElapsedTime(&elapsed, start, end);
 
-  printf("%8lu, %f, %8.2f\n", size_MB, elapsed / PXL_HOST_LOOPS,
-         (size_MB * PXL_HOST_LOOPS) / (elapsed * 1024));
+  printf("%8lu, %f, %8.4f\n", size_MB, elapsed / PXL_HOST_LOOPS,
+         (1.0 * size_MB * PXL_HOST_LOOPS) / (elapsed * 1024));
 
   return 0;
 }
