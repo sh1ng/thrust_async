@@ -70,6 +70,7 @@ int main(int argc, char **argv) {
   float elapsed;
   cudaEventElapsedTime(&elapsed, start, end);
 
+  printf("grid %d block %d \n", gridSize, blockSize);
   printf("%8lu, %f, %8.4f\n", size_MB, elapsed / PXL_HOST_LOOPS,
          (1.0 * size_MB * PXL_HOST_LOOPS) / (elapsed * 1024));
 
