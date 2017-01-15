@@ -23,7 +23,7 @@ __global__ void gather_kernel(const unsigned int *const __restrict__ position,
 }
 
 int main(int argc, char **argv) {
-  const size_t size_MB = max(atoi(argv[0]), 1);
+  const size_t size_MB = max(atoi(argv[1]), 1) * sizeof(unsigned int);
   const size_t size = size_MB * 1024 * 1024;
 
   thrust::host_vector<unsigned int> index(size);
