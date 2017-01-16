@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
   int gridSize = (size + blockSize - 1) / blockSize;
 
   // warm-up
-  gather_kernel<5><<<gridSize, blockSize>>>(
+  gather_kernel<100><<<gridSize, blockSize>>>(
       thrust::raw_pointer_cast(index_d.data()),
       thrust::raw_pointer_cast(data_d.data()),
       thrust::raw_pointer_cast(out_d.data()),
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
   cudaEventRecord(start);
 
   for (int ii = 0; ii < PXL_HOST_LOOPS; ii++) {
-    gather_kernel<5><<<gridSize, blockSize>>>(
+    gather_kernel<100><<<gridSize, blockSize>>>(
         thrust::raw_pointer_cast(index_d.data()),
         thrust::raw_pointer_cast(data_d.data()),
         thrust::raw_pointer_cast(out_d.data()),
